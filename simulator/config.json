@@ -1,0 +1,13 @@
+{
+  "ambient_temp": 15.0,
+  "noise": {
+    "temperature": 0.2,
+    "humidity": 1.0,
+    "co2": 5.0
+  },
+  "faults": {
+    "temperature": ["ok", "ok", "ok"],
+    "humidity": ["ok", "ok"],
+    "co2": "ok"
+  }
+}
