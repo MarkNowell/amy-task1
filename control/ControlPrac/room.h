@@ -12,6 +12,7 @@ public:
     :m_input{in}{}
 
     float getInput()const {return m_input;}
+    void updateInput(float x) {m_input=x;}
 };
 
 class Sensor:public Unit
@@ -34,6 +35,7 @@ public:
 //each room is made up of a number of Units
 class Room
 {
+protected:
     //sensors
     std::vector<Sensor> m_temp{10};
     std::vector<Sensor> m_humidity{10};
@@ -52,6 +54,11 @@ public:
     {}
 
     static Room* readUnits();
+    void writeUnits();
+    void tempControl(float target, float maxTemp);
+    void humidControl(float target);
+    void co2Control(float target, float minT);
+
     friend std::ostream& operator<<(std::ostream& out, const Room& r);
 };
 

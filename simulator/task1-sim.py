@@ -8,7 +8,7 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 CONFIG_FILE = ROOT_DIR + "/config.json"
 OUTPUTS_FILE = ROOT_DIR + "/../shared/outputs.json"
 SENSORS_FILE = ROOT_DIR + "/../shared/sensors.json"
-LOOP_INTERVAL = 0.1  # seconds (10Hz)
+LOOP_INTERVAL = 1.0  # seconds (10Hz)
 
 class GreenhouseSim:
     def __init__(self):

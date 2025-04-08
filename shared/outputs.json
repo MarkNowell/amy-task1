@@ -1,7 +1,7 @@
 {
-  "heater": 1.0,
-  "fan1": 1.0,
-  "fan2": 5.0,
-  "humidifier": 5.0,
-  "co2_injector": 1.0
+    "co2_injector": 0.0,
+    "fan1": 0.0,
+    "fan2": 0.0,
+    "heater": 10.0,
+    "humidifier": 10.0
 }
