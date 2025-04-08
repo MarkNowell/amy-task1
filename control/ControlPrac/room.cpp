@@ -35,6 +35,8 @@ static void readJson(json& d,std::string_view searchstring, std::vector<Control>
 
 }
 
+voi
+
  //overload the << operator to easily output the Unit readings
 std::ostream& operator<<(std::ostream& out, const Room& r)
 {
