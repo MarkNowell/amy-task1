@@ -417,9 +417,9 @@
 	<any>
 	<string_view>
 
-1744129420 c:\users\ahenc\documents\cpp\amy-task1\control\controlprac\room.h
+1744282684 c:\users\ahenc\documents\cpp\amy-task1\control\controlprac\room.h
 
-1744129652 source:c:\users\ahenc\documents\cpp\amy-task1\control\controlprac\main.cpp
+1744294672 source:c:\users\ahenc\documents\cpp\amy-task1\control\controlprac\main.cpp
 	<iostream>
 	<fstream>
 	"../json.hpp"
@@ -428,4 +428,14 @@
 	<chrono>
 	<thread>
 	"room.h"
+	"settings.h"
+
+1744292582 c:\users\ahenc\documents\cpp\amy-task1\control\controlprac\settings.h
+	<winsock2.h>
+	<ws2tcpip.h>
+	<iostream>
+	"../json.hpp"
+
+1744294541 source:c:\users\ahenc\documents\cpp\amy-task1\control\controlprac\settings.cpp
+	"settings.h"
 

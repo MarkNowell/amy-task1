@@ -7,6 +7,7 @@
 #include <thread>
 
 #include "room.h"
+#include "settings.h"
 
 using namespace std::chrono_literals;
 
@@ -14,25 +15,35 @@ int main()
 {
     Room* r=Room::readAllUnits();
     std::cout<<"Created room:\n"<<*r;
-    //Target values
-    const float TARGET_TEMP{22.5};
-    const float TARGET_HUMIDITY{55.0};
-    const float TARGET_CO2{400.0};
 
-    const float MAXTEMP=TARGET_TEMP+3;
-    const float MINCO2=TARGET_CO2-50;
+    Settings::currentSettings();
+    std::cout<<Settings();
+
+    //add in a time of day to determine when we check for updated settings
+    auto settings_updated = std::chrono::steady_clock::now();
+
 
     while(true)
     {
+        auto now = std::chrono::steady_clock::now();
+        std::chrono::duration<float> elapsed = now-settings_updated;
+
+        if(elapsed.count()>=10.0)
+        {
+            Settings::currentSettings();
+            std::cout<<Settings();
+            settings_updated=now;
+        }
         r->readSensors();
 
-        r->Room::tempControl(TARGET_TEMP,MAXTEMP);
-        r->Room::humidControl(TARGET_HUMIDITY);
-        r->Room::co2Control(TARGET_CO2,MINCO2);
+        r->Room::tempControl(Settings::TARGET_TEMP,Settings::MAXTEMP);
+        r->Room::humidControl(Settings::TARGET_HUMIDITY);
+        r->Room::co2Control(Settings::TARGET_CO2,Settings::MINCO2);
 
         std::cout<<*r;
 
         r->Room::writeUnits();
+        std::cout<<"-------------------------------------\n";
         std::this_thread::sleep_for(2000ms);
     }
 
