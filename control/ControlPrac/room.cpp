@@ -142,7 +142,7 @@ std::ostream& operator<<(std::ostream& out, const Room& r)
     return out;
 }
 
-Room* Room::readUnits()
+Room* Room::readAllUnits()
 {
     //read the availble sensors
     std::ifstream sfile(SENSORS);
@@ -179,6 +179,35 @@ Room* Room::readUnits()
     readJson(odata,"co2_injector",&co2inject);
 
     return new Room(tunits,hunits,cunits,heatunits,fanunits,humidunits,co2inject);
+}
+
+void Room::readSensors()
+{
+    //read the availble sensors
+    std::ifstream sfile(SENSORS);
+    if(!sfile)
+    {
+        throw std::runtime_error("Error: Failed to open Sensor Unit data file.");
+    }
+    json data;
+    sfile>>data; //read the Unit file into the json object
+
+    //lambda function to avoid doing the same thing for each sensor type
+    auto updateSensors =[](std::vector<Sensor>& s, const json& j)
+    {
+        if(j.is_array())
+        {
+            for(size_t i=0;i<s.size() && i< j.size();++i)
+            {
+                s[i].updateInput(j[i]);
+            }
+        }
+        else s[0].updateInput(j.get<float>());
+    };
+
+    updateSensors(m_temp,data["temperature"]);
+    updateSensors(m_humidity,data["humidity"]);
+    updateSensors(m_co2,data["co2"]);
 }
 
 void Room::writeUnits()

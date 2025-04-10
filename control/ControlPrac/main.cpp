@@ -12,7 +12,7 @@ using namespace std::chrono_literals;
 
 int main()
 {
-    Room* r=Room::readUnits();
+    Room* r=Room::readAllUnits();
     std::cout<<"Created room:\n"<<*r;
     //Target values
     const float TARGET_TEMP{22.5};
@@ -24,6 +24,8 @@ int main()
 
     while(true)
     {
+        r->readSensors();
+
         r->Room::tempControl(TARGET_TEMP,MAXTEMP);
         r->Room::humidControl(TARGET_HUMIDITY);
         r->Room::co2Control(TARGET_CO2,MINCO2);
@@ -31,7 +33,7 @@ int main()
         std::cout<<*r;
 
         r->Room::writeUnits();
-        std::this_thread::sleep_for(5000ms);
+        std::this_thread::sleep_for(2000ms);
     }
 
     return 0;

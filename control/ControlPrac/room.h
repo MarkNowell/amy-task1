@@ -53,7 +53,9 @@ public:
     m_heater{heat},m_fan{fan},m_humidifier{humid},m_co2inject{co2inject}
     {}
 
-    static Room* readUnits();
+    static Room* readAllUnits();
+
+    void readSensors();
     void writeUnits();
     void tempControl(float target, float maxTemp);
     void humidControl(float target);
