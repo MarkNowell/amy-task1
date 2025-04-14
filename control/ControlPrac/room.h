@@ -1,6 +1,9 @@
 #ifndef ROOM_H_INCLUDED
 #define ROOM_H_INCLUDED
 
+//forward declare Controller class
+class Controller;
+
 //create a Unit class that is generic to any type of Unit we use
 class Unit
 {
@@ -59,9 +62,11 @@ public:
 
     void readSensors();
     void writeUnits();
+    float avSensor(std::vector<Sensor> stype);
     void tempControl(float target, float maxTemp);
-    void humidControl(float target);
-    void co2Control(float target, float minT);
+    void tempControl(float target, Controller& c);
+    void humidControl(float target, Controller& c);
+    void co2Control(float target, Controller& c);
 
     friend std::ostream& operator<<(std::ostream& out, const Room& r);
 };

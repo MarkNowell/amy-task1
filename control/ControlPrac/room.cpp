@@ -4,6 +4,7 @@
 #include <vector>
 #include <string_view>
 #include "room.h"
+#include "controller.h"
 
 //Define the locations of in/out files
 #define OUTPUTS "../../shared/outputs.json"
@@ -33,79 +34,52 @@ static void readJson(json& d,std::string_view searchstring, std::vector<Control>
         }
    }
 }
-
-void Room::tempControl(float target, float maxTemp)
+float Room::avSensor(std::vector<Sensor> stype)
 {
-    float avTemp{};
+    float av{};
     int n{};
-    for (const Sensor& s:m_temp)
+    for (const Sensor& s:stype)
     {
-        avTemp+=s.getInput();
+        av+=s.getInput();
         n++;
     }
-    avTemp=avTemp/n;
+    return av/n;
+}
 
+void Room::tempControl(float target, Controller& c)
+{
+    float avTemp=this->avSensor(m_temp);
+    float updateVoltage = c.compute(target, avTemp);
     if(avTemp<target)
     {
-        for(Control& c:m_heater)c.updateInput(10);
-        for(Control& f:m_fan)f.updateInput(0);
-    };
-    if(avTemp>(target+1))
+       for(Control& f:m_fan)f.updateInput(0);
+       for(Control& h:m_heater)h.updateInput(updateVoltage);
+    }
+    if(avTemp>target)
     {
-        for(Control& c:m_heater)
-            {
-            float current = c.getInput();
-            c.updateInput(current*0.5);
-            }
-        for(Control f:m_fan)f.updateInput(0);
-    };
-    if(avTemp>=maxTemp)
-    {
-        for(Control& c:m_heater)c.updateInput(0);
-        for(Control& f:m_fan)f.updateInput(10);
-    };
+        for(Control& h:m_heater)h.updateInput(0);
+        for(Control& f:m_fan)f.updateInput(-updateVoltage); //make this negative to negate the negative from (avTemp-target) in compute
+    }
+
 }
 
-void Room::humidControl(float target)
+void Room::humidControl(float target,Controller& c)
 {
     float avHumid{};
-    int n{};
-    for(const Sensor& s:m_humidity)
-    {
-        avHumid+=s.getInput();
-        n++;
-    }
-    avHumid=avHumid/n;
+    avHumid=this->avSensor(m_humidity);
 
-    if(avHumid<(target-5))
-    {
-        for(Control& c:m_humidifier)c.updateInput(10);
-    }
-    if(avHumid>=target)
-    {
-        for(Control& c:m_humidifier)c.updateInput(0);
-    }
+    float updateVoltage=c.compute(target,avHumid);
+    for(Control& h:m_humidifier) h.updateInput(updateVoltage);
 }
 
-void Room::co2Control(float target, float minT)
+void Room::co2Control(float target,Controller& c)
 {
     float avCo2{};
-    int n{};
-    for(const Sensor& s:m_co2)
-    {
-        avCo2+=s.getInput();
-        n++;
-    }
-    avCo2=avCo2/n;
+    avCo2=this->avSensor(m_co2);
 
-    if(avCo2<minT)
-    {
-        for(Control& c:m_co2inject)c.updateInput(10);
-    }
-    if(avCo2>=target)
-    {
-        for(Control& c:m_co2inject)c.updateInput(0);
-    }
+    float updateVoltage=c.compute(target,avCo2);
+
+    for(Control& injector:m_co2inject)injector.updateInput(updateVoltage);
 }
 
  //overload the << operator to easily output the Unit readings

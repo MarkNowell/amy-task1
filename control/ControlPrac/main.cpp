@@ -8,6 +8,7 @@
 
 #include "room.h"
 #include "settings.h"
+#include "controller.h"
 
 using namespace std::chrono_literals;
 
@@ -36,9 +37,12 @@ int main()
         }
         r->readSensors();
 
-        r->Room::tempControl(Settings::TARGET_TEMP,Settings::MAXTEMP);
-        r->Room::humidControl(Settings::TARGET_HUMIDITY);
-        r->Room::co2Control(Settings::TARGET_CO2,Settings::MINCO2);
+        PIDController tcontrol(2,0.5,1);
+        PController hcontrol(0.5);
+        PIDController ccontrol(0.05,0.03,0.02);
+        r->tempControl(Settings::TARGET_TEMP,tcontrol);
+        r->humidControl(Settings::TARGET_HUMIDITY,hcontrol);
+        r->co2Control(Settings::TARGET_CO2,ccontrol);
 
         std::cout<<*r;
 

@@ -217,13 +217,14 @@
 	<string_view>
 	"room.h"
 
-1744276408 source:c:\users\ahenc\documents\cpp\amy-task1\control\controlprac\room.cpp
+1744640215 source:c:\users\ahenc\documents\cpp\amy-task1\control\controlprac\room.cpp
 	<iostream>
 	<fstream>
 	"../json.hpp"
 	<vector>
 	<string_view>
 	"room.h"
+	"controller.h"
 
 1743779827 c:\users\ahenc\documents\cpp\amy-task1\control\json.hpp
 	<algorithm>
@@ -417,9 +418,9 @@
 	<any>
 	<string_view>
 
-1744282684 c:\users\ahenc\documents\cpp\amy-task1\control\controlprac\room.h
+1744639887 c:\users\ahenc\documents\cpp\amy-task1\control\controlprac\room.h
 
-1744294672 source:c:\users\ahenc\documents\cpp\amy-task1\control\controlprac\main.cpp
+1744641746 source:c:\users\ahenc\documents\cpp\amy-task1\control\controlprac\main.cpp
 	<iostream>
 	<fstream>
 	"../json.hpp"
@@ -429,6 +430,7 @@
 	<thread>
 	"room.h"
 	"settings.h"
+	"controller.h"
 
 1744292582 c:\users\ahenc\documents\cpp\amy-task1\control\controlprac\settings.h
 	<winsock2.h>
@@ -438,4 +440,6 @@
 
 1744294541 source:c:\users\ahenc\documents\cpp\amy-task1\control\controlprac\settings.cpp
 	"settings.h"
+
+1744643087 c:\users\ahenc\documents\cpp\amy-task1\control\controlprac\controller.h
 

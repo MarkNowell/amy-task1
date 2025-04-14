@@ -1,7 +1,7 @@
 {
-    "co2_injector": 0.0,
+    "co2_injector": -0.24899902939796448,
     "fan1": 0.0,
     "fan2": 0.0,
-    "heater": 5.0,
-    "humidifier": 0.0
+    "heater": 2.100001335144043,
+    "humidifier": 0.03749847412109375
 }
