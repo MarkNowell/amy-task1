@@ -1,5 +1,5 @@
 {
-	"target_temperature": 0.0,
+	"target_temperature": 22.0,
 	"target_humidity": 55.0,
 	"target_co2": 400.0
 }

@@ -9,6 +9,7 @@
 #include "room.h"
 #include "settings.h"
 #include "controller.h"
+#include "fuzzy.h"
 
 using namespace std::chrono_literals;
 
@@ -37,12 +38,13 @@ int main()
         }
         r->readSensors();
 
-        PIDController tcontrol(2,0.5,1);
+        //PIDController tcontrol(2,0.5,1);
         PController hcontrol(0.5);
         PIDController ccontrol(0.05,0.03,0.02);
-        r->tempControl(Settings::TARGET_TEMP,tcontrol);
-        r->humidControl(Settings::TARGET_HUMIDITY,hcontrol);
-        r->co2Control(Settings::TARGET_CO2,ccontrol);
+
+        r->tempControl(Settings::TARGET_TEMP);                  //using Fuzzy
+        r->humidControl(Settings::TARGET_HUMIDITY,hcontrol);    //using P
+        r->co2Control(Settings::TARGET_CO2,ccontrol);           //using PID
 
         std::cout<<*r;
 

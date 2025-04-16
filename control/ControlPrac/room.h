@@ -65,6 +65,7 @@ public:
     float avSensor(std::vector<Sensor> stype);
     void tempControl(float target, float maxTemp);
     void tempControl(float target, Controller& c);
+    void tempControl(float target);
     void humidControl(float target, Controller& c);
     void co2Control(float target, Controller& c);
 

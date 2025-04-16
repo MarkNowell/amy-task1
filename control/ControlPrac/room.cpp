@@ -5,6 +5,7 @@
 #include <string_view>
 #include "room.h"
 #include "controller.h"
+#include "fuzzy.h"
 
 //Define the locations of in/out files
 #define OUTPUTS "../../shared/outputs.json"
@@ -61,6 +62,14 @@ void Room::tempControl(float target, Controller& c)
         for(Control& f:m_fan)f.updateInput(-updateVoltage); //make this negative to negate the negative from (avTemp-target) in compute
     }
 
+}
+//fuzzy temp control
+void Room::tempControl(float target)
+{
+    float avTemp=this->avSensor(m_temp);
+    TempFuzzyControl tempController(target);
+    float output=tempController.compute(avTemp);
+    for(Control& h:m_heater)h.updateInput(output);
 }
 
 void Room::humidControl(float target,Controller& c)

@@ -28,7 +28,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add library="ws2_32.a" />
+					<Add library="ws2_32" />
 				</Linker>
 			</Target>
 		</Build>
@@ -40,6 +40,7 @@
 			<Add library="ws2_32" />
 		</Linker>
 		<Unit filename="controller.h" />
+		<Unit filename="fuzzy.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="room.cpp" />
 		<Unit filename="room.h" />
