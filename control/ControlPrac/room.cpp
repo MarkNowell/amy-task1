@@ -68,8 +68,9 @@ void Room::tempControl(float target)
 {
     float avTemp=this->avSensor(m_temp);
     TempFuzzyControl tempController(target);
-    float output=tempController.compute(avTemp);
-    for(Control& h:m_heater)h.updateInput(output);
+    TempOutPair output=tempController.compute(avTemp);
+    for(Control& h:m_heater)h.updateInput(output.heaterVal);
+    for(Control& f:m_fan)f.updateInput(output.fanVal);
 }
 
 void Room::humidControl(float target,Controller& c)

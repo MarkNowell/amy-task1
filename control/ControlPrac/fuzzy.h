@@ -1,6 +1,7 @@
 #ifndef FUZZY_H_INCLUDED
 #define FUZZY_H_INCLUDED
 
+
 enum class ControlLevel{Off,Low,Medium,High};
 enum class TempLabel{Cold,Normal,Hot};
 enum class HumidityLabel{Dry,Normal,Humid};
@@ -62,11 +63,28 @@ struct FuzzyRule
     :input(i),output(o){}
 };
 
+struct TempFuzzyOutput
+{
+    ControlLevel heater;
+    ControlLevel fan;
+
+    TempFuzzyOutput(ControlLevel h,ControlLevel f)
+    :heater(h),fan(f){};
+};
+struct TempOutPair
+{
+    float heaterVal;
+    float fanVal;
+
+    TempOutPair(float h,float f)
+    :heaterVal(h),fanVal(f){}
+};
+
 class TempFuzzyControl
 {
 private:
     FuzzyVariable<TempLabel> m_temp;
-    std::vector<FuzzyRule<TempLabel,ControlLevel>> m_rules;
+    std::vector<FuzzyRule<TempLabel,TempFuzzyOutput>> m_rules;
 
     float levelToValue(ControlLevel level) const
     {
@@ -88,25 +106,34 @@ public:
         m_temp.addSet({TempLabel::Normal,setTemp-4,setTemp,setTemp+4});
         m_temp.addSet({TempLabel::Hot,setTemp+2,setTemp+6,setTemp+14});
 
-        m_rules.emplace_back(TempLabel::Cold,ControlLevel::High);
-        m_rules.emplace_back(TempLabel::Normal,ControlLevel::Medium);
-        m_rules.emplace_back(TempLabel::Hot,ControlLevel::Off);
+        m_rules.emplace_back(TempLabel::Cold,TempFuzzyOutput(ControlLevel::High,ControlLevel::Off));
+        m_rules.emplace_back(TempLabel::Normal,TempFuzzyOutput(ControlLevel::Medium,ControlLevel::Low));
+        m_rules.emplace_back(TempLabel::Hot,TempFuzzyOutput(ControlLevel::Off,ControlLevel::High));
     }
 
-    float compute(float avt)
+    TempOutPair compute(float avt)
     {
         auto membership=m_temp.fuzzify(avt);
-        float totalWeight=0;
-        float totalValue=0;
+        float htotalWeight=0;
+        float htotalValue=0;
+        float ftotalWeight=0;
+        float ftotalValue=0;
 
         for (const auto& rule:m_rules)
         {
-            float weight=membership[rule.input];
-            float outputVal=levelToValue(rule.output);
-            totalValue+=weight*outputVal;
-            totalWeight+=weight;
+            float hweight=membership[rule.input];
+            float houtputVal=levelToValue(rule.output.heater);
+            htotalValue+=hweight*houtputVal;
+            htotalWeight+=hweight;
+
+            float fweight=membership[rule.input];
+            float foutputVal=levelToValue(rule.output.fan);
+            ftotalValue+=fweight*foutputVal;
+            ftotalWeight+=fweight;
         }
-        return (totalWeight>0)?(totalValue/totalWeight):0;
+        float heaterOut=(htotalWeight>0)?(htotalValue/htotalWeight):0;
+        float fanOut=(ftotalWeight>0)?(ftotalValue/ftotalWeight):0;
+        return TempOutPair(heaterOut,fanOut);
     }
 };
 

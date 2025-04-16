@@ -33,7 +33,7 @@ humidifier_line = ax2.plot([], [], label="Humidifier", linestyle="--", color="pu
 lines3 = [ax3.plot([], [], label="CO₂")[0]]  # Convert to list for consistency
 co2injector_line = ax3.plot([], [], label="CO₂ Injector", linestyle="--", color="orange")[0]
 
-ax1.set_ylim(10,40)
+ax1.set_ylim(10,50)
 ax2.set_ylim(20,90)
 ax3.set_ylim(200,800)
 
