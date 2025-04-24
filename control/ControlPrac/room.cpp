@@ -64,11 +64,10 @@ void Room::tempControl(float target, Controller& c)
 
 }
 //fuzzy temp control
-void Room::tempControl(float target)
+void Room::tempControl(TempFuzzyControl& c)
 {
     float avTemp=this->avSensor(m_temp);
-    TempFuzzyControl tempController(target);
-    TempOutPair output=tempController.compute(avTemp);
+    TempOutPair output=c.compute(avTemp);
     for(Control& h:m_heater)h.updateInput(output.heaterVal);
     for(Control& f:m_fan)f.updateInput(output.fanVal);
 }

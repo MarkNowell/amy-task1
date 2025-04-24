@@ -3,6 +3,7 @@
 
 //forward declare Controller class
 class Controller;
+class TempFuzzyControl;
 
 //create a Unit class that is generic to any type of Unit we use
 class Unit
@@ -65,7 +66,7 @@ public:
     float avSensor(std::vector<Sensor> stype);
     void tempControl(float target, float maxTemp);
     void tempControl(float target, Controller& c);
-    void tempControl(float target);
+    void tempControl(TempFuzzyControl& c);
     void humidControl(float target, Controller& c);
     void co2Control(float target, Controller& c);
 

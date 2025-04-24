@@ -85,6 +85,10 @@ class TempFuzzyControl
 private:
     FuzzyVariable<TempLabel> m_temp;
     std::vector<FuzzyRule<TempLabel,TempFuzzyOutput>> m_rules;
+    //integral gain values to try and make temp more acurate
+    float m_integralError;
+    float m_ki;
+    float m_setTemp;
 
     float levelToValue(ControlLevel level) const
     {
@@ -99,8 +103,8 @@ private:
     }
 
 public:
-    TempFuzzyControl(float setTemp)     //enhance this using templates to make it work for co2 and humidity as well as temp depending on inputs
-    :m_temp(),m_rules()
+    TempFuzzyControl(float setTemp, float ki=0.1f)     //enhance this using templates to make it work for co2 and humidity as well as temp depending on inputs
+    :m_temp(),m_rules(),m_integralError(0),m_ki(ki),m_setTemp(setTemp)
     {
         m_temp.addSet({TempLabel::Cold,0,setTemp-12,setTemp-2});
         m_temp.addSet({TempLabel::Normal,setTemp-4,setTemp,setTemp+4});
@@ -111,8 +115,21 @@ public:
         m_rules.emplace_back(TempLabel::Hot,TempFuzzyOutput(ControlLevel::Off,ControlLevel::High));
     }
 
+    void updateTarget(float newTarget)
+    {
+        m_setTemp=newTarget;
+        m_temp=FuzzyVariable<TempLabel>();
+
+        m_temp.addSet({TempLabel::Cold,0,newTarget-12,newTarget-2});
+        m_temp.addSet({TempLabel::Normal,newTarget-4,newTarget,newTarget+4});
+        m_temp.addSet({TempLabel::Hot,newTarget+2,newTarget+6,newTarget+14});
+    }
     TempOutPair compute(float avt)
     {
+        //error accumulation
+        float error=m_setTemp-avt;
+        m_integralError+=error;
+
         auto membership=m_temp.fuzzify(avt);
         float htotalWeight=0;
         float htotalValue=0;
@@ -131,8 +148,16 @@ public:
             ftotalValue+=fweight*foutputVal;
             ftotalWeight+=fweight;
         }
+
         float heaterOut=(htotalWeight>0)?(htotalValue/htotalWeight):0;
         float fanOut=(ftotalWeight>0)?(ftotalValue/ftotalWeight):0;
+
+        //add integral correction to heater
+        heaterOut+=m_ki*m_integralError;
+        //limit heater output between 0 and 10
+        if(heaterOut>10.0)heaterOut=10.0;
+        else if (heaterOut<0.0)heaterOut=0;
+
         return TempOutPair(heaterOut,fanOut);
     }
 };

@@ -24,6 +24,10 @@ int main()
     //add in a time of day to determine when we check for updated settings
     auto settings_updated = std::chrono::steady_clock::now();
 
+    //PIDController tcontrol(2,0.5,1);
+    TempFuzzyControl tcontrol(Settings::TARGET_TEMP,0.15);
+    PController hcontrol(0.5);
+    PIDController ccontrol(0.05,0.03,0.02);
 
     while(true)
     {
@@ -32,17 +36,16 @@ int main()
 
         if(elapsed.count()>=10.0)
         {
+            static float prevTargetTemp=Settings::TARGET_TEMP;
             Settings::currentSettings();
             std::cout<<Settings();
             settings_updated=now;
+
+            if(Settings::TARGET_TEMP!=prevTargetTemp)tcontrol.updateTarget(Settings::TARGET_TEMP);
         }
         r->readSensors();
 
-        //PIDController tcontrol(2,0.5,1);
-        PController hcontrol(0.5);
-        PIDController ccontrol(0.05,0.03,0.02);
-
-        r->tempControl(Settings::TARGET_TEMP);                  //using Fuzzy
+        r->tempControl(tcontrol);                  //using Fuzzy
         r->humidControl(Settings::TARGET_HUMIDITY,hcontrol);    //using P
         r->co2Control(Settings::TARGET_CO2,ccontrol);           //using PID
 
